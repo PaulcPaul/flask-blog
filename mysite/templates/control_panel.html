@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+    <div class="users">
+        <h6> Usuários </h6>
+        {% if current_user.user_type == "A" %}
+            <a class="btn btn-info btn-sm mt-1 mb-1" href="{{ url_for('generate_user_pdf') }}" target="_blank">
+                <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i> Gerar Lista de Usuários
+            </a>
+        {% endif %} 
+        <div class="media content-section">
+            
+            <ul class="list-group w-100">
+                {% for user in users %}
+                    <li class="list-group-item list-group-item-light"> {{ user.username }}
+                    {% if current_user.user_type == "A" %}
+                        {% if user.user_type != "A" %}
+                            <a class="btn btn-danger btn-sm mt-1 mb-1" style="float: right;" href="{{ url_for('delete_user', user_id=user.id) }}">
+                                <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
+                            </a>
+                            {% if user.user_type != "M" %}
+                                <a class="btn btn-secondary btn-sm mt-1 mb-1" style="float: right;" href="{{ url_for('make_moderator', user_id=user.id) }}">
+                                    <i class="fa fa-superpowers fa-lg" aria-hidden="true"></i> Make mod
+                                </a>
+                            {% else %}
+                                <a class="btn btn-warning btn-sm mt-1 mb-1" style="float: right;" href="{{ url_for('make_moderator', user_id=user.id) }}">
+                                    <i class="fa fa-superpowers fa-lg" aria-hidden="true"></i> Remove mod
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        
+        </div>
+    </div>
+
+    <div class="posts">
+        <h6> Posts </h6> 
+        {% if current_user.user_type == "A" %}
+            <a class="btn btn-info btn-sm mt-1 mb-1" href="{{ url_for('generate_posts_pdf') }} " target="_blank">
+                <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i> Gerar Lista de Posts
+            </a>
+        {% endif %} 
+        <div class="media content-section">
+            
+            <ul class="list-group w-100">
+                {% for post in posts %}
+                    <li class="list-group-item list-group-item-light"> 
+                    {{ post.title }} - {{ post.author.username }} | <i class="fa fa-arrow-up fa-lg" aria-hidden="true"></i> {{ post.total_score }}
+                    {% if current_user.user_type == "A" %}
+                        <a class="btn btn-danger btn-sm mt-1 mb-1" style="float: right;" href="{{ url_for('delete_post', post_id=post.id) }}">
+                            <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
+                        </a>
+                        <a class="btn btn-info btn-sm mt-1 mb-1 mr-1" style="float: right;" href="{{ url_for('delete_scores', post_id=post.id) }}">
+                            Limpar votos
+                        </a>
+                    {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        
+        </div>
+    </div>
+    
+</div>
+{% endblock content %}
